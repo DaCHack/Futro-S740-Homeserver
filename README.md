@@ -52,7 +52,7 @@ blacklist bluetooth
 ## Docker host or basic VM guest with access to iGPU
 
 ### VM Setup
-1) On the host, find the iGPU: `lspci -nnv | grep VGA`
+1) On the host, find the iGPU: `lspci -nnv | grep VGA` (should be 0000:00:02 on the Futro)
 2) Setup the following VM:
 
 | Attribute  | Setting |
