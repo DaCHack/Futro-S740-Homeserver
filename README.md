@@ -5,10 +5,12 @@ Notes on how to set up a fully virtualized homeserver incl. local HTPC on the Fu
 See https://github.com/R3NE07/Futro-S740
 
 ## Operating system (Proxmox) and iGPU passthrough
-I used this guide to 
+I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-passthrough-to-vm/#linux-virtual-machine-igpu-passthrough-configuration) to setup the host, but slightly adapted the guest hardware settings.
+
 Still working on an up-to-date version of Proxmox to allow iGPU passthrough for the Gemini Lake UHD Graphics 600. My settings worked with this version:
 **Proxmox 7.4-3 with Kernel 5.11.22-7-pve**
 (6.5.11-7-pve might be worth to test next, discussion on supported versions is [here](https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/page-3))
+
 1) Download Proxmox at https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer , install vioa USB stick and boot
 2) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
 3) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*`
@@ -45,8 +47,34 @@ blacklist bluetooth
 ```
 10) `update-initramfs -u -k all`
 11) Another `update-grub` might be needed
+12) Reboot the Proxmox host (setup SSH server before if you wish to have handy access next to NOVNC)
 
 ## Docker host or basic VM guest with access to iGPU
+
+### VM Setup
+1) On the host, find the iGPU: `lspci -nnv | grep VGA`
+2) Setup the following VM:
+
+| Attribute  | Setting |
+| ------------- | ------------- |
+| Memory  | 2.00  |
+| Processors  | 3 [host,flags=+pdpe1gb;+aes][cpuunits=100]  |
+| BIOS  | SeaBIOS  |
+| Display  | VirtIO-GPU (virtio)  |
+| Machine  | Default (i440fx)  |
+| SCSI Controller  | VirtIO SCSI single  |
+| Hard Disk  | local-lvm:vm-102-disk-0,iothread=1,size=20G  |
+| Network Device (net0)  | virtio=...,bridge=vmbr0,firewall=1  |
+| USB Device (usb0)  | host=046d:c512 (USB mouse and keyboard directly attached to the S740) |
+| USB Device (usb1)  | host=045e:07b2 (USB mouse and keyboard directly attached to the S740) |
+| PCI Device (hostpci0)  | **0000:00:02, rombar=0** (the graphics card) |
+| PCI Device (hostpci1)  | **0000:00:0e, rombar=0** (the audio chip) |
+
+**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output through the front audio jack
+
+Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 might help
+
+3) Install e.g. Debian in the guest VM
 
 ## Local HTPC Outputs
 
@@ -61,6 +89,8 @@ uxplay -n Homeserver -vs "fbdevsink device=/dev/fb1"
 ```
 
 ## Kodi
-Tbd - major challenges:
+Kodi can be installed and started on my system with KDE installed, but only booted into `sudo systemctl set-default multi-user.target`. So likely to work also with a Debian system without any desktop environment. X might need to be installed as a dependency though
+
+Major challenges:
 - Running in parallel to UxPlay caused kernel panics on my Raspberry Pi where I tried this setup before. To be checked how this can be overcome. Testing on both apps on a single VM seemed to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground). Kodi does not react to mouse or keyboard input. Activating the webserver in guisettings.xml to be able to steer Kodi via mobile app is always reset at start
 - How to run Kodi? Docker container (no working container known which directly accesses the framebuffer without the need for a GUI environment) vs. native in a VM together with UxPlay?
