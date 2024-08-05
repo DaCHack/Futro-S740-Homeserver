@@ -70,15 +70,20 @@ blacklist bluetooth
 | PCI Device (hostpci0)  | **0000:00:02, rombar=0** (the graphics card) |
 | PCI Device (hostpci1)  | **0000:00:0e, rombar=0** (the audio chip) |
 
-**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output through the front audio jack
+**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output through the front audio jack with `speaker-test`
 
 Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 might help
 
-3) Install e.g. Debian in the guest VM
+3) Install e.g. Debian in the guest VM. In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system. You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display.
 
-## Local HTPC Outputs
+### Docker setup
 
-### UxPlay (Airplay Server)
+1) `sudo apt install docker.io`
+2) `sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart-always -v /var/run/docker.sock:/var/run/docker.sock -v /root/containers/portainer:/data portainer/portainer-ce:latest`
+
+### Local HTPC Outputs
+
+#### UxPlay (Airplay Server)
 For details see https://github.com/FDH2/UxPlay
 
 Uxplay is part of a standard Debian distribution. For me it runs either on a separate VM only used for local HTPC output, ie. iGPU, or together with the Docker host. Benefit of having all together is that also Docker containers can use hardware transcoding, e.g. Jellyfin!
@@ -88,7 +93,7 @@ Uxplay needs to be started with manual selection of video and audio sinks for th
 uxplay -n Homeserver -vs "fbdevsink device=/dev/fb1"
 ```
 
-## Kodi
+#### Kodi
 Kodi can be installed and started on my system with KDE installed, but only booted into `sudo systemctl set-default multi-user.target`. So likely to work also with a Debian system without any desktop environment. X might need to be installed as a dependency though
 
 Major challenges:
