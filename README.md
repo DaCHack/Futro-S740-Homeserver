@@ -92,6 +92,7 @@ Uxplay needs to be started with manual selection of video and audio sinks for th
 ```
 uxplay -n Homeserver -vs "fbdevsink device=/dev/fb1"
 ```
+Slight issue still is that the bottom 1/5th to 1/6th is cut off on my 3:4 physical display. Need to check this.
 
 #### Kodi
 Kodi can be installed and started on my system with KDE installed, but only booted into `sudo systemctl set-default multi-user.target`. So likely to work also with a Debian system without any desktop environment. X might need to be installed as a dependency though
