@@ -9,7 +9,7 @@ I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-
 
 Still working on an up-to-date version of Proxmox to allow iGPU passthrough for the Gemini Lake UHD Graphics 600. My settings worked with this version:
 **Proxmox 7.4-3 with Kernel 5.11.22-7-pve**
-(6.5.11-7-pve might be worth to test next, discussion on supported versions is [here](https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/page-3))
+(5.13.19-1 and 6.5.11-7-pve might be worth to test next, discussion on supported versions is [here](https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/page-3))
 
 1) Download Proxmox at https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer , install vioa USB stick and boot
 2) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
