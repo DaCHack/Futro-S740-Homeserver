@@ -75,6 +75,10 @@ blacklist bluetooth
 Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 as well as [this one](https://forum.proxmox.com/threads/proxmox-6-0-gemini-lake-and-igd-graphics-passthrough-for-windows-10.60415/page-3#post-389588) might help
 
 3) Install e.g. Debian in the guest VM. In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system. You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display.
+4) Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
+5) Install and set up ssh
+6) Install and set up unattended-upgrades
+7) Install and set up fail2ban
 
 ### Docker setup
 
