@@ -92,13 +92,20 @@ For details see https://github.com/FDH2/UxPlay
 
 Uxplay is part of a standard Debian distribution. For me it runs either on a separate VM only used for local HTPC output, ie. iGPU, or together with the Docker host. Benefit of having all together is that also Docker containers can use hardware transcoding, e.g. Jellyfin!
 
+Install GStreamer dependencies and UxPlay itself (installs >300 dependencies as well :( )
+```sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad uxplay```
+
 Uxplay needs to be started with manual selection of video and audio sinks for the Futro S740 (in my case the framebuffer device for DisplayPort 1 while running the VirtIO screen / NOVNC on /dev/fb0):
 ```
 uxplay -n Homeserver -nh -s 1280x1024 -nohold -vs "fbdevsink device=/dev/fb1"
 ```
 
+Note: At least with a q35 VM, Uxplay does not work when run as root and seems not to initialize the server socket(s).
+
+
 #### Kodi
-Kodi can be installed and started on my system with KDE installed, but only booted into `sudo systemctl set-default multi-user.target`. So likely to work also with a Debian system without any desktop environment. X might need to be installed as a dependency though
+Kodi can be installed and started on my system without desktop environment. Will install a >110 depenendencies though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
+`apt install kodi`
 
 Major challenges:
 - Running in parallel to UxPlay caused kernel panics on my Raspberry Pi where I tried this setup before. To be checked how this can be overcome. Testing on both apps on a single VM seemed to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground). Kodi does not react to mouse or keyboard input. Activating the webserver in guisettings.xml to be able to steer Kodi via mobile app is always reset at start
