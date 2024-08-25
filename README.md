@@ -55,6 +55,7 @@ IONOS_PREFIX = <XXXXXXX>
 IONOS_SECRET = <XXXXXXX>
 ```
 in API Data
+
 14) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
     - 8GB Swap
     - 30GB Root
