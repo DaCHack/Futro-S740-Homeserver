@@ -70,7 +70,7 @@ blacklist bluetooth
 | PCI Device (hostpci0)  | **0000:00:02 (all functions!), rombar=0** (the graphics card) |
 | PCI Device (hostpci1)  | **0000:00:0e, (all functions!) rombar=0** (the audio chip) |
 
-**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output through the front audio jack with `speaker-test`
+**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `speaker-test`
 
 Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 as well as [this one](https://forum.proxmox.com/threads/proxmox-6-0-gemini-lake-and-igd-graphics-passthrough-for-windows-10.60415/page-3#post-389588) might help
 
@@ -107,8 +107,8 @@ Note/Challenges:
 #### Kodi
 Kodi can be installed and started on my system without desktop environment. Will install a >110 depenendencies though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
 `apt install kodi`
+If Kodi is run as an unpriviledged user (recommended!) make sure to add the user to the group `input` (`usermod -a -G input administrator`) and reboot the VM to be able to use mouse and keyboard!
 
 Note/Challenges:
-- Kodi cannot be steered with mouse and keyboard under unpriviledged user. Only started as root, I was able to use the app
 - Running in parallel to UxPlay caused kernel panics on my Raspberry Pi where I tried this setup before. To be checked how this can be overcome. Testing on both apps on a single VM seemed to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground). Kodi does not react to mouse or keyboard input. Activating the webserver in guisettings.xml to be able to steer Kodi via mobile app is always reset at start
 - How to run Kodi? Docker container (no working container known which directly accesses the framebuffer without the need for a GUI environment) vs. native in a VM together with UxPlay?
