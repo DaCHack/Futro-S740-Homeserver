@@ -14,7 +14,7 @@ Still working on an up-to-date version of Proxmox to allow iGPU passthrough for 
 1) Download Proxmox at https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer , install vioa USB stick and boot
    - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually
 3) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
-4) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*`
+4) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*` or `apt list proxmox-kernel*` respectively
 5) Install the newest working kernel (to be checked if newer kernels will support this, but currently this is the newest that I found): `apt install pve-kernel-5.11.22-7-pve `
 6) Edit the cmdline in Grub `nano /etc/default/grub`:
 ```
