@@ -99,6 +99,8 @@ Uxplay is part of a standard Debian distribution. For me it runs either on a sep
 Install GStreamer dependencies and UxPlay itself (installs >300 dependencies as well :( )
 ```sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad uxplay```
 
+On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script habdling uxplay and kodi in parallel.
+
 Uxplay needs to be started with manual selection of video and audio sinks for the Futro S740 (in my case the framebuffer device for DisplayPort 1 while running the VirtIO screen / NOVNC on /dev/fb0):
 ```
 uxplay -n Homeserver -nh -s 1280x1024 -nohold -vs "fbdevsink device=/dev/fb1"
