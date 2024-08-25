@@ -110,5 +110,6 @@ Kodi can be installed and started on my system without desktop environment. Will
 If Kodi is run as an unpriviledged user (recommended!) make sure to add the user to the group `input` (`usermod -a -G input administrator`) and reboot the VM to be able to use mouse and keyboard!
 
 Note/Challenges:
-- Running in parallel to UxPlay caused kernel panics on my Raspberry Pi where I tried this setup before. To be checked how this can be overcome. Testing on both apps on a single VM seemed to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground). Kodi does not react to mouse or keyboard input. Activating the webserver in guisettings.xml to be able to steer Kodi via mobile app is always reset at start
+- Running in parallel to UxPlay on a single VM seemed to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground independently of the sink used for UxPlay)
+- Activating the webserver in guisettings.xml to be able to steer Kodi via mobile app is always reset at start
 - How to run Kodi? Docker container (no working container known which directly accesses the framebuffer without the need for a GUI environment) vs. native in a VM together with UxPlay?
