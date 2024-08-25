@@ -97,7 +97,8 @@ Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox foru
 3) Install e.g. Debian in the guest VM.
    - Ideally, unselect the desktop environment and only install SSH server and the standard system utilities.
    - In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system.
-   - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display.
+   - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display. (not feasible on q35 machine, virtual console freezes and no clean reboots/shutdowns are possible via SSH)
+   - **Disabling the VirtioGPU in machine options avoids a deadlock on the virtual console and enables clean shutdowns and reboots**
 5) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
 6)  Do `su -`  , `apt install sudo`, `usermod -a -G sudo administrator` (where administator is the user name created during installation and *reboot*
 7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` and `sudo update-grub`to get sound from the audio jack. This might cause no output possible via DisplayPort though!
@@ -120,7 +121,7 @@ For details see https://github.com/FDH2/UxPlay
 Uxplay is part of a standard Debian distribution. For me it runs either on a separate VM only used for local HTPC output, ie. iGPU, or together with the Docker host. Benefit of having all together is that also Docker containers can use hardware transcoding, e.g. Jellyfin!
 
 Install GStreamer dependencies and UxPlay itself (installs >320 dependencies at >740MB disk space as well :( )
-```sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad uxplay```
+```sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-alsa uxplay```
 
 On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script habdling uxplay and kodi in parallel.
 
