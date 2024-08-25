@@ -67,8 +67,8 @@ blacklist bluetooth
 | Network Device (net0)  | virtio=...,bridge=vmbr0,firewall=1  |
 | USB Device (usb0)  | host=046d:c512 (USB mouse and keyboard directly attached to the S740) |
 | USB Device (usb1)  | host=045e:07b2 (USB mouse and keyboard directly attached to the S740) |
-| PCI Device (hostpci0)  | **0000:00:02, rombar=0** (the graphics card) |
-| PCI Device (hostpci1)  | **0000:00:0e, rombar=0** (the audio chip) |
+| PCI Device (hostpci0)  | **0000:00:02 (all functions!), rombar=0** (the graphics card) |
+| PCI Device (hostpci1)  | **0000:00:0e, (all functions!) rombar=0** (the audio chip) |
 
 **Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output through the front audio jack with `speaker-test`
 
