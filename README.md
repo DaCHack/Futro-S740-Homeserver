@@ -49,7 +49,13 @@ blacklist bluetooth
 10) `update-initramfs -u -k all`
 11) Another `update-grub` might be needed
 12) Reboot the Proxmox host (setup SSH server before if you wish to have handy access next to NOVNC - should already be running by default)
-13) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
+13) Set up HTTPS certificates via Let's encrypt in [Node]->Certificates and Datacenter->ACME. For IONOS I needed to append
+```
+IONOS_PREFIX = <XXXXXXX>
+IONOS_SECRET = <XXXXXXX>
+```
+in API Data
+14) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
     - 8GB Swap
     - 30GB Root
     - 200GB local-lvm (30GB infra VM, min. 150GB media VM)
