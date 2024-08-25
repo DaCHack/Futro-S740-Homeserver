@@ -9,7 +9,16 @@ I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-
 
 Still working on an up-to-date version of Proxmox to allow iGPU passthrough for the Gemini Lake UHD Graphics 600. My settings worked with this version:
 **Proxmox 7.4-3 with Kernel 5.11.22-7-pve**
-(5.13.19-1, 6.2.16-19-pve (Proxmox 8.0.4, Dani) and 6.5.11-7-pve might be worth to test next, discussion on supported versions is [here](https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/page-3))
+
+**Compatibility list**
+
+| Proxmox Version  | Kernel Version | Video | Audio | Other comments
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| 7.4-3  | 5.11.22-7-pve  | OK | OK | First complete successful runthough with i440fx/Seabios |
+| 7.4-3  | 5.13.19-1      | - | - | Untested, [supposed to work](https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/page-3) |
+| 8.0.4  | 6.2.16-19-pve  | - | - | Untested, what Dani uses with Audio+Video on q35/Seabios |
+| 8.0.4 (?) | 6.5.11-7-pve   | - | - | Untested
+| 8.2.2  | 6.8.4-2-pve    | (OK) | NO | Currently testing with q35/Seabios, no audio output. KODI runs fine, no output from UxPlay |
 
 1) Download Proxmox at https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer , install vioa USB stick and boot
    - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually
@@ -85,11 +94,17 @@ IONOS_SECRET = <XXXXXXX>
 
 Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 as well as [this one](https://forum.proxmox.com/threads/proxmox-6-0-gemini-lake-and-igd-graphics-passthrough-for-windows-10.60415/page-3#post-389588) might help
 
-3) Install e.g. Debian in the guest VM. Ideally, unselect the desktop environment and only install SSH server and the basic sytem utilities. In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system. You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display.
+3) Install e.g. Debian in the guest VM.
+   - Ideally, unselect the desktop environment and only install SSH server and the standard system utilities.
+   - In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system.
+   - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display.
 5) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
-6) Install and set up ssh
-7) Install and set up unattended-upgrades
-8) Install and set up fail2ban
+6)  Do `su -`  , `apt install sudo`, `usermod -a -G sudo administrator` (where administator is the user name created during installation and *reboot*
+7)  Set up SSH
+   - After Debian installation is set up already and you are able to log in with the user created during installation
+   - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
+8) Install and set up unattended-upgrades
+9) Install and set up fail2ban
 
 ### Docker setup
 
@@ -103,7 +118,7 @@ For details see https://github.com/FDH2/UxPlay
 
 Uxplay is part of a standard Debian distribution. For me it runs either on a separate VM only used for local HTPC output, ie. iGPU, or together with the Docker host. Benefit of having all together is that also Docker containers can use hardware transcoding, e.g. Jellyfin!
 
-Install GStreamer dependencies and UxPlay itself (installs >300 dependencies as well :( )
+Install GStreamer dependencies and UxPlay itself (installs >320 dependencies at >740MB disk space as well :( )
 ```sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad uxplay```
 
 On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script habdling uxplay and kodi in parallel.
@@ -117,7 +132,7 @@ Note: UxPlay is [not designed to be run as root](https://github.com/FDH2/UxPlay/
 
 
 #### Kodi
-Kodi can be installed and started on my system without desktop environment. Will install a >110 dependencies though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
+Kodi can be installed and started on my system without desktop environment. Will install a >110 dependencies at >240MB disk space though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
 ```
 apt install kodi
 kodi-standalone
