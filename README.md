@@ -108,8 +108,11 @@ Note: UxPlay is [not designed to be run as root](https://github.com/FDH2/UxPlay/
 
 
 #### Kodi
-Kodi can be installed and started on my system without desktop environment. Will install a >110 depenendencies though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
-`apt install kodi`
+Kodi can be installed and started on my system without desktop environment. Will install a >110 dependencies though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
+
+```apt install kodi
+kodi-standalone```
+
 If Kodi is run as an unpriviledged user (recommended!) make sure to add the user to the group `input` (`usermod -a -G input administrator`) and reboot the VM to be able to use mouse and keyboard!
 
 Note/Challenges:
