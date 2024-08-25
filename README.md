@@ -61,7 +61,7 @@ blacklist bluetooth
 | Processors  | 3 [host,flags=+pdpe1gb;+aes][cpuunits=100]  |
 | BIOS  | SeaBIOS  |
 | Display  | VirtIO-GPU (virtio)  |
-| Machine  | Default (i440fx)  |
+| Machine  | Default (i440fx)  (q35 proved to work as well, but I did not manage to have the virtual console usable due to the qemu soundchip not being recognized when passing through the host sound chip)|
 | SCSI Controller  | VirtIO SCSI single  |
 | Hard Disk  | local-lvm:vm-102-disk-0,iothread=1,size=20G  |
 | Network Device (net0)  | virtio=...,bridge=vmbr0,firewall=1  |
@@ -100,13 +100,15 @@ Uxplay needs to be started with manual selection of video and audio sinks for th
 uxplay -n Homeserver -nh -s 1280x1024 -nohold -vs "fbdevsink device=/dev/fb1"
 ```
 
-Note: At least with a q35 VM, Uxplay does not work when run as root and seems not to initialize the server socket(s).
+Note/Challenges:
+- At least with a q35 VM, Uxplay does not work when run as root and seems not to initialize the server socket(s) (might become a challenge when UxPlay is supposed to run in a docker container under root)
 
 
 #### Kodi
 Kodi can be installed and started on my system without desktop environment. Will install a >110 depenendencies though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
 `apt install kodi`
 
-Major challenges:
+Note/Challenges:
+- Kodi cannot be steered with mouse and keyboard under unpriviledged user. Only started as root, I was able to use the app
 - Running in parallel to UxPlay caused kernel panics on my Raspberry Pi where I tried this setup before. To be checked how this can be overcome. Testing on both apps on a single VM seemed to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground). Kodi does not react to mouse or keyboard input. Activating the webserver in guisettings.xml to be able to steer Kodi via mobile app is always reset at start
 - How to run Kodi? Docker container (no working container known which directly accesses the framebuffer without the need for a GUI environment) vs. native in a VM together with UxPlay?
