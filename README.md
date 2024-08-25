@@ -104,8 +104,7 @@ Uxplay needs to be started with manual selection of video and audio sinks for th
 uxplay -n Homeserver -nh -s 1280x1024 -nohold -vs "fbdevsink device=/dev/fb1"
 ```
 
-Note/Challenges:
-- At least with a q35 VM, Uxplay does not work when run as root and seems not to initialize the server socket(s) (might become a challenge when UxPlay is supposed to run in a docker container under root)
+Note: UxPlay is [not designed to be run as root](https://github.com/FDH2/UxPlay/issues/330). A quick test seems to show that server sockets get initialized but the dns-sd "bonjour" service doesnt connect. Actually it does run fine under root, when the firewall is turned off. You may have an active firewall with some ports open for uxplay as a user, but not set up for root. A docker container thus should run as an unproviledged user (recommended anyways!)
 
 
 #### Kodi
