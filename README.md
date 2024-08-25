@@ -12,10 +12,11 @@ Still working on an up-to-date version of Proxmox to allow iGPU passthrough for 
 (5.13.19-1, 6.2.16-19-pve (Proxmox 8.0.4, Dani) and 6.5.11-7-pve might be worth to test next, discussion on supported versions is [here](https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/page-3))
 
 1) Download Proxmox at https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer , install vioa USB stick and boot
-2) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
-3) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*`
-4) Install the newest working kernel (to be checked if newer kernels will support this, but currently this is the newest that I found): `apt install pve-kernel-5.11.22-7-pve `
-5) Edit the cmdline in Grub `nano /etc/default/grub`:
+   - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually
+3) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
+4) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*`
+5) Install the newest working kernel (to be checked if newer kernels will support this, but currently this is the newest that I found): `apt install pve-kernel-5.11.22-7-pve `
+6) Edit the cmdline in Grub `nano /etc/default/grub`:
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="quiet nowatchdog ipv6.disable=1 nofb nomodeset disable_vga=1 intel_iommu=on iommu=pt pcie_acs_override=downstream,multifunction initcall_blacklist=sysfb_init video=simplefb:off video=vesafb:off video=efifb:off video=vesa:off vfio_iommu_type1.allow_unsafe_interrupts=1 kvm.ignore_msrs=1 modprobe.blacklist=radeon,nouveau,nvidia,nvidiafb,nvidia-gpu,snd_hda_intel,snd_soc_skl,snd_soc_avs,snd_sof_pci_intel_apl,snd_hda_codec_hdmi,i915 vfio-pci.ids=8086:3185,8086:3198"
 GRUB_CMDLINE_LINUX="ipv6.disable=1"
@@ -48,7 +49,7 @@ blacklist bluetooth
 10) `update-initramfs -u -k all`
 11) Another `update-grub` might be needed
 12) Reboot the Proxmox host (setup SSH server before if you wish to have handy access next to NOVNC)
-13) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, I used on a 256GB SSD (238,98 effectively):
+13) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
     - 8GB Swap
     - 30GB Root
     - 200GB local-lvm (30GB infra VM, min. 150GB media VM)
