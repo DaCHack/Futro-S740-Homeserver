@@ -18,7 +18,7 @@ Still working on an up-to-date version of Proxmox to allow iGPU passthrough for 
 | 7.4-3  | 5.13.19-1      | - | - | Untested, [supposed to work](https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/page-3) |
 | 8.0.4  | 6.2.16-19-pve  | - | - | Untested, what Dani uses with Audio+Video on q35/Seabios |
 | 8.0.4 (?) | 6.5.11-7-pve   | - | - | Untested
-| 8.2.2  | 6.8.4-2-pve    | (OK) | NO | Currently testing with q35/Seabios, no audio output. KODI runs fine, no output from UxPlay |
+| 8.2.2  | 6.8.4-2-pve    | OK | NO | Currently testing with q35/Seabios, no audio output. KODI runs fine, no output from UxPlay until I installed, ran and then closed again KODI |
 
 1) Download Proxmox at https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer , install vioa USB stick and boot
    - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually
