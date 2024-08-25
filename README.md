@@ -100,7 +100,7 @@ Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox foru
    - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display.
 5) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
 6)  Do `su -`  , `apt install sudo`, `usermod -a -G sudo administrator` (where administator is the user name created during installation and *reboot*
-7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` to `sudo nano /etc/default/grub` and `sudo update-grub`to get sound from the audio jack. This might cause no output possible via DisplayPort though!
+7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` and `sudo update-grub`to get sound from the audio jack. This might cause no output possible via DisplayPort though!
 8)  Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
