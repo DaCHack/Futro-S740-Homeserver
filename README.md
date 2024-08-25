@@ -70,7 +70,7 @@ blacklist bluetooth
 | PCI Device (hostpci0)  | **0000:00:02 (all functions!), rombar=0** (the graphics card) |
 | PCI Device (hostpci1)  | **0000:00:0e, (all functions!) rombar=0** (the audio chip) |
 
-**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `speaker-test`
+**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `sudo speaker-test -D plughw:1,0` (hostpci1 with All functions, ROM-Bar and PCIe checked)
 
 Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 as well as [this one](https://forum.proxmox.com/threads/proxmox-6-0-gemini-lake-and-igd-graphics-passthrough-for-windows-10.60415/page-3#post-389588) might help
 
