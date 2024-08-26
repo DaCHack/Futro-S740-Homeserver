@@ -92,6 +92,8 @@ IONOS_SECRET = <XXXXXXX>
 
 **Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `sudo speaker-test -D plughw:1,0` (hostpci1 with All functions, ROM-Bar and PCIe checked on a q35 VM)
 
+**Latest Update:** Speaker-test works fine with Proxmox 8.2.2 and Kernel 6.8.4-2-pve on a vanilla q35 machine with OVMF using above command. Both GPU and HDA are passed through with all functions, both ROM-Bar and PCIe deactivated.
+
 Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 as well as [this one](https://forum.proxmox.com/threads/proxmox-6-0-gemini-lake-and-igd-graphics-passthrough-for-windows-10.60415/page-3#post-389588) might help
 
 3) Install e.g. Debian in the guest VM.
