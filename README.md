@@ -123,14 +123,17 @@ For details see https://github.com/FDH2/UxPlay
 Uxplay is part of a standard Debian distribution. For me it runs either on a separate VM only used for local HTPC output, ie. iGPU, or together with the Docker host. Benefit of having all together is that also Docker containers can use hardware transcoding, e.g. Jellyfin!
 
 Install GStreamer dependencies and UxPlay itself (installs >320 dependencies at >740MB disk space as well :( )
-```sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-alsa uxplay```
+```sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-alsa ~~gstreamer1.0-vaapi~~ uxplay```
 
-On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script habdling uxplay and kodi in parallel.
+If you want to use **gstreamer1.0-vaapi**, you need to add the user to the video and render groups `sudo usermod -a -G render administrator` and `sudo usermod -a -G video administrator`. Yet I noticed that UxPlay will not work with VAAPI installed: With VirtIO-GPU activated gstreamer will fail to initialize the device eventhough you only want the output on the physical display and with VirtIO-GPU deactivated it fails with error: `no such element factory "vaapipostproc"! `. So deinstalled it again falling back to software de-/encoding if I understand it correctly. Causes ~20% load on the 3 CPUs I assigned to the VM when playing a fullscreen video from my iPhone.
+
+On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script habdling uxplay and Kodi in parallel.
 
 Uxplay needs to be started with manual selection of video and audio sinks for the Futro S740 (in my case the framebuffer device for DisplayPort 1 while running the VirtIO screen / NOVNC on /dev/fb0 - **if VirtIO-GPU is off, use /dev/fb0!**):
 ```
-uxplay -n Homeserver -nh -s 1280x1024 -nohold -vs "fbdevsink device=/dev/fb1"
+uxplay -n Homeserver -nh -s 1280x1024 -nohold -vs "fbdevsink device=/dev/fb0" -as "alsasink device=plughw:1,0"
 ```
+(for sound output via headphone jack - change device ID to the correct DP port if needed!)
 
 Note: UxPlay is [not designed to be run as root](https://github.com/FDH2/UxPlay/issues/330). A quick test seems to show that server sockets get initialized but the dns-sd "bonjour" service doesnt connect. Actually it does run fine under root, when the firewall is turned off. You may have an active firewall with some ports open for uxplay as a user, but not set up for root. A docker container thus should run as an unproviledged user (recommended anyways!)
 
