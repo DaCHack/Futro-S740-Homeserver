@@ -18,7 +18,7 @@ I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-
 | 8.2.2  | 6.8.4-2-pve    | OK | (OK) | - Currently testing with q35/Seabios, audio output only with `snd_hda_intel.probe_mask=1` in cmdline. KODI runs fine, no audio output from UxPlay until I installed, ran and then closed again KODI<br>- Currently testing with q35/OVMF working quite well with only the virtual console being unusable. SSH required|
 
 1) Download Proxmox at [Version 7.4](https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer) or [current](https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso), install via USB stick and boot
-   - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually (see point 14 on what I used)
+   - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually (see step 15 on what I used)
 3) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
 4) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*` or `apt list proxmox-kernel*` respectively
 5) Install the newest working kernel (to be checked if newer kernels will support this, but currently this is the newest that I found): `apt install pve-kernel-5.11.22-7-pve `
@@ -27,8 +27,13 @@ I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-
 GRUB_CMDLINE_LINUX_DEFAULT="quiet nowatchdog ipv6.disable=1 nofb nomodeset disable_vga=1 intel_iommu=on iommu=pt pcie_acs_override=downstream,multifunction initcall_blacklist=sysfb_init video=simplefb:off video=vesafb:off video=efifb:off video=vesa:off vfio_iommu_type1.allow_unsafe_interrupts=1 kvm.ignore_msrs=1 modprobe.blacklist=radeon,nouveau,nvidia,nvidiafb,nvidia-gpu,snd_hda_intel,snd_soc_skl,snd_soc_avs,snd_sof_pci_intel_apl,snd_hda_codec_hdmi,i915 vfio-pci.ids=8086:3185,8086:3198"
 GRUB_CMDLINE_LINUX="ipv6.disable=1"
 ```
-6) `update-grub`
-7) `nano /etc/modules`
+I also tried to avoid ACS-Overrides which seemed to work fine a VM already set up before. To be tested on a newly created machine in an empty Proxmox:
+```
+GRUB_CMDLINE_LINUX_DEFAULT="quiet nowatchdog ipv6.disable=1 nofb nomodeset disable_vga=1 intel_iommu=on iommu=pt initcall_blacklist=sysfb_init video=simplefb:off video=vesafb:off video=efifb:off video=vesa:off vfio_iommu_type1.allow_unsafe_interrupts=1 kvm.ignore_msrs=1 modprobe.blacklist=radeon,nouveau,nvidia,nvidiafb,nvidia-gpu,snd_hda_intel,snd_soc_skl,snd_soc_avs,snd_sof_pci_intel_apl,snd_hda_codec_hdmi,i915 vfio-pci.ids=8086:3185,8086:3198"
+GRUB_CMDLINE_LINUX="ipv6.disable=1"
+```
+7) `update-grub`
+8) `nano /etc/modules`
 ```
 # Modules required for PCI passthrough
 vfio
@@ -36,12 +41,12 @@ vfio_iommu_type1
 vfio_pci
 vfio_virqfd
 ```
-8) `nano /etc/modprobe.d/kvm.conf`
+9) `nano /etc/modprobe.d/kvm.conf`
 ```
 options kvm ignore_msrs=1
 options kvm report_ignored_msrs=0
 ```
-9) `nano /etc/modprobe.d/pve-blacklist.conf` (Blacklisting bluetooth here for power saving purposes. The rest is relevant to free the devices on the host system and make them available to the VM guest)
+10) `nano /etc/modprobe.d/pve-blacklist.conf` (Blacklisting bluetooth here for power saving purposes. The rest is relevant to free the devices on the host system and make them available to the VM guest)
 ```
 # nidiafb see bugreport https://bugzilla.proxmox.com/show_bug.cgi?id=701
 blacklist nvidiafb
@@ -52,16 +57,16 @@ blacklist snd_soc_skl
 blacklist snd_sof_pci
 blacklist bluetooth
 ```
-10) `update-initramfs -u -k all`
-11) Another `update-grub` might be needed
-12) Reboot the Proxmox host (setup SSH server before if you wish to have handy access next to NOVNC - should already be running by default)
-13) Set up HTTPS certificates via Let's encrypt in [Node]->Certificates and Datacenter->ACME. For IONOS I needed to append in "API Data":
+11) `update-initramfs -u -k all`
+12) Another `update-grub` might be needed
+13) Reboot the Proxmox host (setup SSH server before if you wish to have handy access next to NOVNC - should already be running by default)
+14) Set up HTTPS certificates via Let's encrypt in [Node]->Certificates and Datacenter->ACME. For IONOS I needed to append in "API Data":
 ```
 IONOS_PREFIX = <XXXXXXX>
 IONOS_SECRET = <XXXXXXX>
 ```
 
-14) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
+15) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
     - 8GB Swap
     - 30GB Root
     - 200GB local-lvm (30GB infra VM, min. 150GB media VM)
