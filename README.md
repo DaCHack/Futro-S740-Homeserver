@@ -17,7 +17,7 @@ I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-
 | 8.0.4 (?) | 6.5.11-7-pve   | - | - | Untested
 | 8.2.2  | 6.8.4-2-pve    | OK | (OK) | - Currently testing with q35/Seabios, audio output only with `snd_hda_intel.probe_mask=1` in cmdline. KODI runs fine, no audio output from UxPlay until I installed, ran and then closed again KODI<br>- Currently testing with q35/OVMF working quite well with only the virtual console being unusable. SSH required|
 
-1) Download Proxmox at https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer , install vioa USB stick and boot
+1) Download Proxmox at [Version 7.4](https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer) or [current](https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso), install via USB stick and boot
    - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually
 3) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
 4) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*` or `apt list proxmox-kernel*` respectively
