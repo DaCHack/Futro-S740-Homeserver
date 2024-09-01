@@ -124,12 +124,12 @@ Install GStreamer dependencies and UxPlay itself (installs >320 dependencies at 
 sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-alsa uxplay
 ```
 
+If you want to use **gstreamer1.0-vaapi**, you need to add the user to the video and render groups `sudo usermod -a -G render administrator` and `sudo usermod -a -G video administrator`. Yet I noticed that UxPlay will not work with VAAPI installed: With VirtIO-GPU activated gstreamer will fail to initialize the device eventhough you only want the output on the physical display and with VirtIO-GPU deactivated it fails with error: `no such element factory "vaapipostproc"! `. So deinstalled it again falling back to software de-/encoding if I understand it correctly. Causes ~20% load on the 3 CPUs I assigned to the VM when playing a fullscreen video from my iPhone.
 ```
 sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-alsa gstreamer1.0-vaapi uxplay
 ```
-If you want to use **gstreamer1.0-vaapi**, you need to add the user to the video and render groups `sudo usermod -a -G render administrator` and `sudo usermod -a -G video administrator`. Yet I noticed that UxPlay will not work with VAAPI installed: With VirtIO-GPU activated gstreamer will fail to initialize the device eventhough you only want the output on the physical display and with VirtIO-GPU deactivated it fails with error: `no such element factory "vaapipostproc"! `. So deinstalled it again falling back to software de-/encoding if I understand it correctly. Causes ~20% load on the 3 CPUs I assigned to the VM when playing a fullscreen video from my iPhone.
 
-On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script habdling uxplay and Kodi in parallel.
+On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script handling uxplay and Kodi in parallel.
 
 Uxplay needs to be started with manual selection of video and audio sinks for the Futro S740 (in my case the framebuffer device for DisplayPort 1 while running the VirtIO screen / NOVNC on /dev/fb0 - **if VirtIO-GPU is off, use /dev/fb0!**):
 ```
