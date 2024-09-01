@@ -75,22 +75,22 @@ IONOS_SECRET = <XXXXXXX>
 1) On the host, find the iGPU: `lspci -nnv | grep VGA` (should be 0000:00:02 on the Futro)
 2) Setup the following VM:
 
-| Attribute  | Setting |
-| ------------- | ------------- |
-| Memory  | 2.00  |
-| Processors  | 3 [host,flags=+pdpe1gb;+aes][cpuunits=100]  |
-| BIOS  | SeaBIOS  |
-| Display  | VirtIO-GPU (virtio)  |
-| Machine  | Default (i440fx)  (q35 proved to work as well, but I did not manage to have the virtual console usable due to the qemu soundchip not being recognized when passing through the host sound chip)|
-| SCSI Controller  | VirtIO SCSI single  |
-| Hard Disk  | local-lvm:vm-102-disk-0,iothread=1,size=20G  |
-| Network Device (net0)  | virtio=...,bridge=vmbr0,firewall=1  |
-| USB Device (usb0)  | host=046d:c512 (USB mouse and keyboard directly attached to the S740) |
-| USB Device (usb1)  | host=045e:07b2 (USB mouse and keyboard directly attached to the S740) |
-| PCI Device (hostpci0)  | **0000:00:02 (all functions!), rombar=0** (the graphics card) |
-| PCI Device (hostpci1)  | **0000:00:0e, (all functions!) rombar=0** (the audio chip) |
+| Attribute  | My Setting on 7.4-3 | My Setting on 8.2.2 |
+| ------------- | ------------- | ------------- |
+| Memory  | 2.00  | 4.00 [balloon=0]  |
+| Processors  | 3 [host,flags=+pdpe1gb;+aes][cpuunits=100]  | 3 [host,flags=+pdpe1gb;+aes][cpuunits=100]  |
+| BIOS  | SeaBIOS  | OVMF (UEFI)  |
+| Display  | VirtIO-GPU (virtio)  | VirtIO-GPU (virtio)  |
+| Machine  | Default (i440fx)  (q35 proved to work as well, but I did not manage to have the virtual console usable due to the qemu soundchip not being recognized when passing through the host sound chip)|  q35 |
+| SCSI Controller  | VirtIO SCSI single  | VirtIO SCSI single  |
+| Hard Disk  | local-lvm:vm-102-disk-0,iothread=1,size=20G  | local-lvm:vm-102-disk-0,iothread=1,size=32G (partitioned automatically via Debian installer |
+| Network Device (net0)  | virtio=...,bridge=vmbr0,firewall=1  | virtio=...,bridge=vmbr0,firewall=1  |
+| USB Device (usb0)  | host=046d:c512 (USB mouse and keyboard directly attached to the S740) | host=046d:c512 (USB mouse and keyboard directly attached to the S740) |
+| USB Device (usb1)  | host=045e:07b2 (USB mouse and keyboard directly attached to the S740) | host=045e:07b2 (USB mouse and keyboard directly attached to the S740) |
+| PCI Device (hostpci0)  | **0000:00:02 (all functions!), rombar=0** (the graphics card) | **0000:00:02 (all functions!), rombar=0** (the graphics card) |
+| PCI Device (hostpci1)  | **0000:00:0e, (all functions!) rombar=0** (the audio chip) | **0000:00:0e, (all functions!) rombar=0** (the audio chip) |
 
-**Note:** Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `sudo speaker-test -D plughw:1,0` (hostpci1 with All functions, ROM-Bar and PCIe checked on a q35 VM)
+**Note:** Make sure both ROM-Bar and PCIe deactivated! Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `sudo speaker-test -D plughw:1,0` (hostpci1 with All functions, ROM-Bar and PCIe checked on a q35 VM)
 
 **Latest Update:** Speaker-test works fine with Proxmox 8.2.2 and Kernel 6.8.4-2-pve on a vanilla q35 machine with OVMF using above command. Both GPU and HDA are passed through with all functions, both ROM-Bar and PCIe deactivated.
 
