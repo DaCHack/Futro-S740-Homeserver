@@ -18,22 +18,22 @@ I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-
 | 8.2.2  | 6.8.4-2-pve    | OK | (OK) | - Currently testing with q35/Seabios, audio output only with `snd_hda_intel.probe_mask=1` in cmdline. KODI runs fine, no audio output from UxPlay until I installed, ran and then closed again KODI<br>- Currently testing with q35/OVMF working quite well with only the virtual console being unusable. SSH required|
 
 1) Download Proxmox at [Version 7.4](https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso/proxmox-ve-7-4-iso-installer) or [current](https://www.proxmox.com/de/downloads/proxmox-virtual-environment/iso), install via USB stick and boot
-   - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually (see step 15 on what I used)
-3) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
-4) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*` or `apt list proxmox-kernel*` respectively
-5) Install the newest working kernel (to be checked if newer kernels will support this, but currently this is the newest that I found): `apt install pve-kernel-5.11.22-7-pve `
-6) Edit the cmdline in Grub `nano /etc/default/grub`:
+   - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually (see step 14 on what I used)
+2) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
+3) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*` or `apt list proxmox-kernel*` respectively
+4) Install the newest working kernel (to be checked if newer kernels will support this, but currently this is the newest that I found): `apt install pve-kernel-5.11.22-7-pve `
+5) Edit the cmdline in Grub `nano /etc/default/grub`:
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="quiet nowatchdog ipv6.disable=1 nofb nomodeset disable_vga=1 intel_iommu=on iommu=pt pcie_acs_override=downstream,multifunction initcall_blacklist=sysfb_init video=simplefb:off video=vesafb:off video=efifb:off video=vesa:off vfio_iommu_type1.allow_unsafe_interrupts=1 kvm.ignore_msrs=1 modprobe.blacklist=radeon,nouveau,nvidia,nvidiafb,nvidia-gpu,snd_hda_intel,snd_soc_skl,snd_soc_avs,snd_sof_pci_intel_apl,snd_hda_codec_hdmi,i915 vfio-pci.ids=8086:3185,8086:3198"
 GRUB_CMDLINE_LINUX="ipv6.disable=1"
 ```
-I also tried to avoid ACS-Overrides which seemed to work fine a VM already set up before. To be tested on a newly created machine in an empty Proxmox:
+I also tried to avoid the security-sensitive ACS-Overrides [see here](https://vfio.blogspot.com/2014/08/iommu-groups-inside-and-out.html) and [here](https://forum.proxmox.com/threads/pci-gpu-passthrough-on-proxmox-ve-8-installation-and-configuration.130218/) which seemed to work fine a VM already set up before. To be tested on a newly created machine in an empty Proxmox:
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="quiet nowatchdog ipv6.disable=1 nofb nomodeset disable_vga=1 intel_iommu=on iommu=pt initcall_blacklist=sysfb_init video=simplefb:off video=vesafb:off video=efifb:off video=vesa:off vfio_iommu_type1.allow_unsafe_interrupts=1 kvm.ignore_msrs=1 modprobe.blacklist=radeon,nouveau,nvidia,nvidiafb,nvidia-gpu,snd_hda_intel,snd_soc_skl,snd_soc_avs,snd_sof_pci_intel_apl,snd_hda_codec_hdmi,i915 vfio-pci.ids=8086:3185,8086:3198"
 GRUB_CMDLINE_LINUX="ipv6.disable=1"
 ```
-7) `update-grub`
-8) `nano /etc/modules`
+6) `update-grub`
+7) `nano /etc/modules`
 ```
 # Modules required for PCI passthrough
 vfio
@@ -41,12 +41,12 @@ vfio_iommu_type1
 vfio_pci
 vfio_virqfd
 ```
-9) `nano /etc/modprobe.d/kvm.conf`
+8) `nano /etc/modprobe.d/kvm.conf`
 ```
 options kvm ignore_msrs=1
 options kvm report_ignored_msrs=0
 ```
-10) `nano /etc/modprobe.d/pve-blacklist.conf` (Blacklisting bluetooth here for power saving purposes. The rest is relevant to free the devices on the host system and make them available to the VM guest)
+9) `nano /etc/modprobe.d/pve-blacklist.conf` (Blacklisting bluetooth here for power saving purposes. The rest is relevant to free the devices on the host system and make them available to the VM guest)
 ```
 # nidiafb see bugreport https://bugzilla.proxmox.com/show_bug.cgi?id=701
 blacklist nvidiafb
@@ -57,16 +57,16 @@ blacklist snd_soc_skl
 blacklist snd_sof_pci
 blacklist bluetooth
 ```
-11) `update-initramfs -u -k all`
-12) Another `update-grub` might be needed
-13) Reboot the Proxmox host (setup SSH server before if you wish to have handy access next to NOVNC - should already be running by default)
-14) Set up HTTPS certificates via Let's encrypt in [Node]->Certificates and Datacenter->ACME. For IONOS I needed to append in "API Data":
+10) `update-initramfs -u -k all`
+11) Another `update-grub` might be needed
+12) Reboot the Proxmox host (setup SSH server before if you wish to have handy access next to NOVNC - should already be running by default)
+13) Set up HTTPS certificates via Let's encrypt in [Node]->Certificates and Datacenter->ACME. For IONOS I needed to append in "API Data":
 ```
 IONOS_PREFIX = <XXXXXXX>
 IONOS_SECRET = <XXXXXXX>
 ```
 
-15) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
+14) [Resize local and local-lvm storage](https://www.reddit.com/r/Proxmox/comments/vj6u54/is_it_possible_to_shrink_storage_disk_i_want_to/) to not waste storage for the root partition, if not done during installation (see above). I used on a 256GB SSD (238,98 effectively):
     - 8GB Swap
     - 30GB Root
     - 200GB local-lvm (30GB infra VM, min. 150GB media VM)
@@ -92,20 +92,16 @@ IONOS_SECRET = <XXXXXXX>
 | PCI Device (hostpci0)  | **0000:00:02 (all functions!), rombar=0** (the graphics card) | **0000:00:02 (all functions!), rombar=0** (the graphics card) |
 | PCI Device (hostpci1)  | **0000:00:0e, (all functions!) rombar=0** (the audio chip) | **0000:00:0e, (all functions!) rombar=0** (the audio chip) |
 
-**Note:** Make sure both ROM-Bar and PCIe deactivated! Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `sudo speaker-test -D plughw:1,0` (hostpci1 with All functions, ROM-Bar and PCIe checked on a q35 VM)
-
-**Latest Update:** Speaker-test works fine with Proxmox 8.2.2 and Kernel 6.8.4-2-pve on a vanilla q35 machine with OVMF using above command. Both GPU and HDA are passed through with all functions, both ROM-Bar and PCIe deactivated.
-
-Working on a solution with OVMF but did not succeed yet. [Thread on Proxmox forum](https://forum.proxmox.com/threads/intel-igp-gemini-lake-passthrough-q35-fails-to-boot-on-ubuntu-18-04-3-lts-%E2%80%93-i915-conflict-detected-with-stolen-region.57584/) regarding Ubuntu guest on Gemini Lake with q35 as well as [this one](https://forum.proxmox.com/threads/proxmox-6-0-gemini-lake-and-igd-graphics-passthrough-for-windows-10.60415/page-3#post-389588) might help
+**Note:** Audio works fine with Proxmox 8.2.2 and Kernel 6.8.4-2-pve on a vanilla q35 machine with OVMF. Make sure both GPU and HDA are passed through with all functions on, while ROM-Bar and PCIe both deactivated! Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `sudo speaker-test -D plughw:1,0` (hostpci1 with All functions, ROM-Bar and PCIe checked on a q35 VM)
 
 3) Install e.g. Debian in the guest VM.
    - Ideally, unselect the desktop environment and only install SSH server and the standard system utilities.
    - In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system.
    - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display. (not feasible on q35 machine, virtual console freezes and no clean reboots/shutdowns are possible via SSH)
-   - **Disabling the VirtioGPU in machine options avoids a deadlock on the virtual console and enables clean shutdowns and reboots**
+   - **Disabling the VirtIO-GPU in machine options avoids a deadlock on the virtual console and enables clean shutdowns and reboots**
 5) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
 6)  Do `su -`  , `apt install sudo`, `usermod -a -G sudo administrator` (where administator is the user name created during installation and *reboot*
-7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` and `sudo update-grub`to get sound from the audio jack. This might cause no output possible via DisplayPort though!
+7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though!
 8)  Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
@@ -134,15 +130,15 @@ If you want to use **gstreamer1.0-vaapi**, you need to add the user to the video
 sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-alsa gstreamer1.0-vaapi uxplay
 ```
 
-On Debian 12 uxplay needs to be updated / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script handling uxplay and Kodi in parallel.
+On Debian 12 uxplay needs to be [updated to testing](https://unix.stackexchange.com/a/253866) / manually compiled to allow for at least version 1.69 (stock at 1.62) to enable the -dacp argument which is supposed to help an script handling uxplay and Kodi in parallel. Also, this version connects clients much faster!
 
 Uxplay needs to be started with manual selection of video and audio sinks for the Futro S740 (in my case the framebuffer device for DisplayPort 1 while running the VirtIO screen / NOVNC on /dev/fb0 - **if VirtIO-GPU is off, use /dev/fb0!**):
 ```
 uxplay -n Homeserver -nh -s 1280x1024 -nohold -vs "fbdevsink device=/dev/fb1" -as "alsasink device=plughw:1,0"
 ```
-(for sound output via headphone jack - change device ID to the correct DP port if needed!)
+(for sound output via headphone jack - change device ID for alsasink to the correct DP port if needed!)
 
-Note: UxPlay is [not designed to be run as root](https://github.com/FDH2/UxPlay/issues/330). A quick test seems to show that server sockets get initialized but the dns-sd "bonjour" service doesnt connect. Actually it does run fine under root, when the firewall is turned off. You may have an active firewall with some ports open for uxplay as a user, but not set up for root. A docker container thus should run as an unproviledged user (recommended anyways!)
+Note: UxPlay is [not designed to be run as root](https://github.com/FDH2/UxPlay/issues/330). A quick test seems to show that server sockets get initialized but the dns-sd "bonjour" service doesnt connect. Actually it does run fine under root, when the firewall is turned off. You may have an active firewall with some ports open for uxplay as a user, but not set up for root. A docker container thus should run as an unpriviledged user (recommended anyways!)
 
 
 #### Kodi
