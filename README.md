@@ -80,7 +80,7 @@ IONOS_SECRET = <XXXXXXX>
 | Memory  | 2.00  | 4.00 [balloon=0]  |
 | Processors  | 3 [host,flags=+pdpe1gb;+aes][cpuunits=100]  | 3 [host,flags=+pdpe1gb;+aes][cpuunits=100]  |
 | BIOS  | SeaBIOS  | OVMF (UEFI)  |
-| Display  | VirtIO-GPU (virtio)  | VirtIO-GPU (virtio)  |
+| Display  | VirtIO-GPU (virtio)  | VirtIO-GPU (virtio) (or "none" to not use the anyways unusable virtual console, but then having the physical display as the main screen) |
 | Machine  | Default (i440fx)  (q35 proved to work as well, but I did not manage to have the virtual console usable due to the qemu soundchip not being recognized when passing through the host sound chip)|  q35 (virtual console also not usable here) |
 | SCSI Controller  | VirtIO SCSI single  | VirtIO SCSI single  |
 | Hard Disk  | local-lvm:vm-102-disk-0,iothread=1,size=20G  | local-lvm:vm-102-disk-0,iothread=1,size=32G (partitioned automatically via Debian installer |
