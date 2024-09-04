@@ -111,7 +111,7 @@ IONOS_SECRET = <XXXXXXX>
 ### Docker setup
 
 1) `sudo apt install docker.io`
-2) `sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart-always -v /var/run/docker.sock:/var/run/docker.sock -v /root/containers/portainer:/data portainer/portainer-ce:latest`
+2) `sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /root/containers/portainer:/data portainer/portainer-ce:latest`
 
 ### Local HTPC Outputs
 
