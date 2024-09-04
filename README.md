@@ -120,7 +120,14 @@ For details see https://github.com/FDH2/UxPlay
 
 Uxplay is part of a standard Debian distribution. For me it runs either on a separate VM only used for local HTPC output, ie. iGPU, or together with the Docker host. Benefit of having all together is that also Docker containers can use hardware transcoding, e.g. Jellyfin!
 
-Install GStreamer dependencies and UxPlay itself (installs >320 dependencies at >740MB disk space as well :( )
+##### In Docker Container
+It runs natively very smooth and responsive. Yet it boiles the worker VM's operating system and installs >320 dependencies at >740MB disk space as well :( . Thus I created a docker container to at least keep the base system clean:
+https://github.com/DaCHack/UxPlay-docker
+Performance is yet a little shaky, but working on it.
+
+##### In Worker VM Operating System
+
+Install GStreamer dependencies and UxPlay itself
 ```
 sudo apt install gstreamer1.0-plugins-base gstreamer1.0-libav gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-alsa uxplay
 ```
