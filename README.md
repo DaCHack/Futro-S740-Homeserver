@@ -122,7 +122,9 @@ Uxplay is part of a standard Debian distribution. For me it runs either on a sep
 
 ##### In Docker Container
 It runs natively very smooth and responsive. Yet it boiles the worker VM's operating system and installs >320 dependencies at >740MB disk space as well :( . Thus I created a docker container to at least keep the base system clean:
+
 https://github.com/DaCHack/UxPlay-docker
+
 Performance is yet a little shaky, but working on it.
 
 ##### In Worker VM Operating System
