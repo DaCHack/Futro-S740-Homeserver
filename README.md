@@ -151,7 +151,17 @@ Note: UxPlay is [not designed to be run as root](https://github.com/FDH2/UxPlay/
 
 
 #### Kodi
-Kodi can be installed and started on my system without desktop environment. Will install a >110 dependencies at >240MB disk space though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies):
+
+##### In Docker Container
+Kodi can be installed and started on my system without desktop environment. Yet it boiles the worker VM's operating system and installs >110 dependencies at >240MB disk space though (with UxPlay and Gstreamer already installed, thus on-top of their dependencies). Thus I created a docker container to at least keep the base system clean:
+
+https://github.com/DaCHack/rpi-kodi
+
+Performance is yet a little shaky, but working on it.
+
+##### In Worker VM Operating System
+
+Install through APT:
 ```
 apt install kodi
 kodi-standalone
