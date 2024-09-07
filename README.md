@@ -120,7 +120,7 @@ For details see https://github.com/FDH2/UxPlay
 
 Uxplay is part of a standard Debian distribution. For me it runs either on a separate VM only used for local HTPC output, ie. iGPU, or together with the Docker host. Benefit of having all together is that also Docker containers can use hardware transcoding, e.g. Jellyfin!
 
-##### In Docker Container
+##### In Docker Container (recommended)
 It runs natively very smooth and responsive. Yet it boiles the worker VM's operating system and installs >320 dependencies at >740MB disk space as well :( . Thus I created a docker container to at least keep the base system clean:
 
 https://github.com/DaCHack/UxPlay-docker
