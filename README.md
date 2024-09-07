@@ -125,7 +125,7 @@ It runs natively very smooth and responsive. Yet it boiles the worker VM's opera
 
 https://github.com/DaCHack/UxPlay-docker
 
-Performance is yet a little shaky, but working on it.
+I totally recommend this approach, despite hardware acceleration through /dev/dri does not work well. Checking on this...
 
 ##### In Worker VM Operating System
 
