@@ -128,6 +128,8 @@ It runs natively very smooth and responsive. Yet it boiles the worker VM's opera
 
 https://github.com/DaCHack/UxPlay-docker
 
+It needs a local Avahi daemon on the docker host though so install it before spinning up the container: `sudo apt install avahi-daemon`
+
 I totally recommend this approach, despite hardware acceleration through /dev/dri does not work well. Checking on this...
 
 ##### In Worker VM Operating System
