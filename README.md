@@ -116,6 +116,29 @@ sudo apt install firmware-misc-nonfree
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
 9) Install and set up unattended-upgrades
 10) Install and set up fail2ban
+```
+sudo apt install fail2ban
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+```
+Edit `nano /etc/fail2ban/jail.local` to secure the SSH server (ideally the only service running on the worker VM while everything else is containerized). Defaults can be kept. Just make sure that the SSH section looks as follows:
+```
+[sshd]
+
+# To use more aggressive sshd modes set filter parameter "mode" in jail.local:
+# normal (default), ddos, extra or aggressive (combines all).
+# See "tests/files/logs/sshd" or "filter.d/sshd.conf" for usage example and details.
+#mode   = normal
+**enabled = true
+filter  = sshd**
+port    = ssh
+logpath = %(sshd_log)s
+**#backend = %(sshd_backend)s
+backend = systemd**
+```
+Restart the fail2ban daemon:
+```
+sudo service fail2ban restart
+```
 
 **Note:** It seems that DisplayPort does not work when plugged in only after boot. I tested booting without the DP connected and did not receive any output until I first connected the monitor end and then plugged out and in again the PC end of the cable. Afterwards, the system detects the DP cable again even after the monitor end is completely cut off power. It needs about 10-20sec though for the connection to be established. Might be a special situation since I use a DP->HDMI cable and an HDMI-splitter between the PC and the monitor.
 
