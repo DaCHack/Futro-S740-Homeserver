@@ -99,23 +99,23 @@ IONOS_SECRET = <XXXXXXX>
    - In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system.
    - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display. (not feasible on q35 machine, virtual console freezes and no clean reboots/shutdowns are possible via SSH)
    - **Disabling the VirtIO-GPU in machine options avoids a deadlock on the virtual console and enables clean shutdowns and reboots**
-5) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
-6)  Enable sudo for your non-root user (where administator is the user name created during installation) and *reboot*:
+4) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
+5)  Enable sudo for your non-root user (where administator is the user name created during installation) and *reboot*:
 ```
 su -
 apt install sudo
 usermod -a -G sudo administrator
 ``` 
-7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though! **I did not need this.**
-8) Install non-free firmware
+6)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though! **I did not need this.**
+7) Install non-free firmware
 ```
 sudo apt install firmware-misc-nonfree
 ```
-9) Set up SSH
+8) Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
-10) Install and set up unattended-upgrades
-11) Install and set up fail2ban
+9) Install and set up unattended-upgrades
+10) Install and set up fail2ban
 
 **Note:** It seems that DisplayPort does not work when plugged in only after boot. I tested booting without the DP connected and did not receive any output until I first connected the monitor end and then plugged out and in again the PC end of the cable. Afterwards, the system detects the DP cable again even after the monitor end is completely cut off power. It needs about 10-20sec though for the connection to be established. Might be a special situation since I use a DP->HDMI cable and an HDMI-splitter between the PC and the monitor.
 
@@ -187,7 +187,4 @@ kodi-standalone
 ```
 If Kodi is run as an unpriviledged user (recommended!) make sure to add the user to the group `input` (`usermod -a -G input administrator`) and reboot the VM to be able to use mouse and keyboard!
 
-Note/Challenges:
-- Running in parallel to UxPlay on a single VM seemed to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground independently of the sink used for UxPlay)
-- Activating the webserver in guisettings.xml to be able to steer Kodi via mobile app is always reset at start
-- How to run Kodi? Docker container (no working container known which directly accesses the framebuffer without the need for a GUI environment) vs. native in a VM together with UxPlay?
+**Note:** Running in parallel to UxPlay on a single VM seems to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground independently of the sink used for UxPlay). Plan is to write a script watching for UxPlay's "-dacp" file. If the file appears (and thus a connection to UxPlay is established), the script shall pause the Kodi container or shut it down. Eventually both containers could be merged to run the script directly in the container.
