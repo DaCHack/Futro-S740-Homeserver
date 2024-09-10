@@ -100,13 +100,16 @@ IONOS_SECRET = <XXXXXXX>
    - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display. (not feasible on q35 machine, virtual console freezes and no clean reboots/shutdowns are possible via SSH)
    - **Disabling the VirtIO-GPU in machine options avoids a deadlock on the virtual console and enables clean shutdowns and reboots**
 5) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
-6)  Do `su -`  , `apt install sudo`, `usermod -a -G sudo administrator` (where administator is the user name created during installation and *reboot*
-7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though!
-8)  Set up SSH
+6)  Do `su -`  , `apt install sudo`, `usermod -a -G sudo administrator` (where administator is the user name created during installation) and *reboot* to enable sudo for this user
+7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though! **I did not need this.**
+8) Install non-free firmware `sudo apt install firmware-misc-nonfree`
+9) Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
-8) Install and set up unattended-upgrades
-9) Install and set up fail2ban
+10) Install and set up unattended-upgrades
+11) Install and set up fail2ban
+
+**Note: **It seems that DisplayPort does not work when plugged in only after boot. I tested booting without the DP connected and did not receive any output until I first connected the monitor end and then plugged out and in again the PC end of the cable. Afterwards, the system detects the DP cable again even after the monitor end is completely cut off power. It needs about 10-20sec though for the connection to be established. Might be a special situation since I use a DP->HDMI cable and an HDMI-splitter between the PC and the monitor.
 
 ### Docker setup
 
