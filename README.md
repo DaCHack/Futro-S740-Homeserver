@@ -70,6 +70,61 @@ IONOS_SECRET = <XXXXXXX>
     - 8GB Swap
     - 30GB Root
     - 200GB local-lvm (30GB infra VM, min. 150GB media VM)
+   
+15) Install and set up unattended-upgrades
+```
+sudo apt install unattended-upgrades
+```
+Edit `sudo nano /etc/apt/apt.conf.d/50unattended-upgrades` and make sure following three lines are uncommented:
+```
+        "origin=Debian,codename=${distro_codename},label=Debian";
+        "origin=Debian,codename=${distro_codename},label=Debian-Security";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+```
+Turn on the service and do a dry run to test the configuration:
+```
+sudo systemctl start unattended-upgrades
+sudo systemctl enable unattended-upgrades
+sudo unattended-upgrades --dry-run --debug
+```
+
+16) Install and set up fail2ban
+```
+sudo apt install fail2ban
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+```
+Edit `sudo nano /etc/fail2ban/jail.local` to secure the SSH server. Defaults can be kept. Just make sure that the SSH section looks as follows and add the Proxmox section:
+```
+[sshd]
+
+# To use more aggressive sshd modes set filter parameter "mode" in jail.local:
+# normal (default), ddos, extra or aggressive (combines all).
+# See "tests/files/logs/sshd" or "filter.d/sshd.conf" for usage example and details.
+#mode   = normal
+**enabled = true
+filter  = sshd**
+port    = ssh
+logpath = %(sshd_log)s
+**#backend = %(sshd_backend)s
+backend = systemd**
+
+[proxmox]
+enabled = true
+port = https,http,8006
+filter = proxmox
+backend = systemd
+```
+Create the Proxmox configuration file for fail2ban in `sudo nano /etc/fail2ban/filter.d/proxmox.conf`:
+```
+[Definition]
+failregex = pvedaemon\[.*authentication failure; rhost=<HOST> user=.* msg=.*
+ignoreregex =
+```
+
+Restart the fail2ban daemon:
+```
+sudo service fail2ban restart
+```
 
 ## Docker host or basic VM guest with access to iGPU
 
@@ -115,12 +170,28 @@ sudo apt install firmware-misc-nonfree
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
 9) Install and set up unattended-upgrades
+```
+sudo apt install unattended-upgrades
+```
+Edit `sudo nano /etc/apt/apt.conf.d/50unattended-upgrades` and make sure following three lines are uncommented:
+```
+        "origin=Debian,codename=${distro_codename},label=Debian";
+        "origin=Debian,codename=${distro_codename},label=Debian-Security";
+        "origin=Debian,codename=${distro_codename}-security,label=Debian-Security";
+```
+Turn on the service and do a dry run to test the configuration:
+```
+sudo systemctl start unattended-upgrades
+sudo systemctl enable unattended-upgrades
+sudo unattended-upgrades --dry-run --debug
+```
+
 10) Install and set up fail2ban
 ```
 sudo apt install fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
 ```
-Edit `nano /etc/fail2ban/jail.local` to secure the SSH server (ideally the only service running on the worker VM while everything else is containerized). Defaults can be kept. Just make sure that the SSH section looks as follows:
+Edit `sudo nano /etc/fail2ban/jail.local` to secure the SSH server (ideally the only service running on the worker VM while everything else is containerized). Defaults can be kept. Just make sure that the SSH section looks as follows:
 ```
 [sshd]
 
