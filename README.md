@@ -21,7 +21,7 @@ I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-
    - On installation target page go to "Options" and set swapsize and maxroot. To avoid changing it later manually (see step 14 on what I used)
 2) Connect via webinterface at [IP]:8006, login with root and the password set during the installation process and enter the console by clicking on the node's name on the left
 3) Find available kernels with `pve-efiboot-tool kernel list`/`proxmox-boot-tool kernel list` (seem to be identical and only showing the currently installed kernels) and `apt list pve-kernel*` or `apt list proxmox-kernel*` respectively
-4) Install the newest working kernel (to be checked if newer kernels will support this, but currently this is the newest that I found): `apt install pve-kernel-5.11.22-7-pve `
+4) Install the newest working kernel (as listed above) if the stock kernel does not work: `apt install pve-kernel-5.11.22-7-pve `
 5) Edit the cmdline in Grub `nano /etc/default/grub`:
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="quiet nowatchdog ipv6.disable=1 nofb nomodeset disable_vga=1 intel_iommu=on iommu=pt pcie_acs_override=downstream,multifunction initcall_blacklist=sysfb_init video=simplefb:off video=vesafb:off video=efifb:off video=vesa:off vfio_iommu_type1.allow_unsafe_interrupts=1 kvm.ignore_msrs=1 modprobe.blacklist=radeon,nouveau,nvidia,nvidiafb,nvidia-gpu,snd_hda_intel,snd_soc_skl,snd_soc_avs,snd_sof_pci_intel_apl,snd_hda_codec_hdmi,i915 vfio-pci.ids=8086:3185,8086:3198"
@@ -100,21 +100,32 @@ IONOS_SECRET = <XXXXXXX>
    - You can even disable the NOVNC screen, yet I found it helpful to use this screen for the NOVNC terminal in runlevel 3 while having all graphical outputs (KODI, UxPlay) on the physical display. (not feasible on q35 machine, virtual console freezes and no clean reboots/shutdowns are possible via SSH)
    - **Disabling the VirtIO-GPU in machine options avoids a deadlock on the virtual console and enables clean shutdowns and reboots**
 5) Optional: Enable xterm.js by adding a virtual serial port to the VM, enable the serial port in the VM operating system `sudo systemctl enable serial-getty@ttyS0.service` and `sudo systemctl start serial-getty@ttyS0.service`.
-6)  Do `su -`  , `apt install sudo`, `usermod -a -G sudo administrator` (where administator is the user name created during installation) and *reboot* to enable sudo for this user
+6)  Enable sudo for your non-root user (where administator is the user name created during installation) and *reboot*:
+```
+su -
+apt install sudo
+usermod -a -G sudo administrator
+``` 
 7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though! **I did not need this.**
-8) Install non-free firmware `sudo apt install firmware-misc-nonfree`
+8) Install non-free firmware
+```
+sudo apt install firmware-misc-nonfree
+```
 9) Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
 10) Install and set up unattended-upgrades
 11) Install and set up fail2ban
 
-**Note: **It seems that DisplayPort does not work when plugged in only after boot. I tested booting without the DP connected and did not receive any output until I first connected the monitor end and then plugged out and in again the PC end of the cable. Afterwards, the system detects the DP cable again even after the monitor end is completely cut off power. It needs about 10-20sec though for the connection to be established. Might be a special situation since I use a DP->HDMI cable and an HDMI-splitter between the PC and the monitor.
+**Note:** It seems that DisplayPort does not work when plugged in only after boot. I tested booting without the DP connected and did not receive any output until I first connected the monitor end and then plugged out and in again the PC end of the cable. Afterwards, the system detects the DP cable again even after the monitor end is completely cut off power. It needs about 10-20sec though for the connection to be established. Might be a special situation since I use a DP->HDMI cable and an HDMI-splitter between the PC and the monitor.
 
 ### Docker setup
 
-1) `sudo apt install docker.io`
-2) `sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /root/containers/portainer:/data portainer/portainer-ce:latest`
+Install Docker and deploy [Portainer](https://www.portainer.io/). If needed, make sure to add the path to the SSL certificates as another volume:
+```
+sudo apt install docker.io
+sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /root/containers/portainer:/data portainer/portainer-ce:latest
+```
 
 ### Local HTPC Outputs
 
@@ -128,7 +139,10 @@ It runs natively very smooth and responsive. Yet it boiles the worker VM's opera
 
 https://github.com/DaCHack/UxPlay-docker
 
-It needs a local Avahi daemon on the docker host though so install it before spinning up the container: `sudo apt install avahi-daemon`
+It needs a local Avahi daemon on the docker host though so install it before spinning up the container:
+```
+sudo apt install avahi-daemon
+```
 
 I totally recommend this approach, despite hardware acceleration through /dev/dri does not work well. Checking on this...
 
