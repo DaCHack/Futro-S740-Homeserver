@@ -287,3 +287,11 @@ kodi-standalone
 If Kodi is run as an unpriviledged user (recommended!) make sure to add the user to the group `input` (`usermod -a -G input administrator`) and reboot the VM to be able to use mouse and keyboard!
 
 **Note:** Running in parallel to UxPlay on a single VM seems to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground independently of the sink used for UxPlay). Plan is to write a script watching for UxPlay's "-dacp" file. If the file appears (and thus a connection to UxPlay is established), the script shall pause the Kodi container or shut it down. Eventually both containers could be merged to run the script directly in the container.
+
+## Further References for troubleshooting
+https://forum.proxmox.com/threads/igpu-passthrough-intel-j4105-gemini-lake-uhd-graphics-600.139505/
+https://forums.unraid.net/topic/124100-no-display-output-with-igpu-passthrough-windows-vm/
+https://forum.proxmox.com/threads/proxmox-5-2-gemini-lake-and-igd-graphics-passthrough-for-ubuntu-18.47129/page-2
+https://asokolsky.github.io/proxmox/pcie-passthrough.html
+https://pve.proxmox.com/wiki/PCI(e)_Passthrough
+https://forum.proxmox.com/threads/pci-passthrough-error-since-kernel-5-13-19-1-upgrade-from-7-0-to-7-1.100961/
