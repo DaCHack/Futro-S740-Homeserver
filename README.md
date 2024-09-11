@@ -7,7 +7,7 @@ See https://github.com/R3NE07/Futro-S740
 ## Operating system (Proxmox) and iGPU passthrough
 I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-passthrough-to-vm/#linux-virtual-machine-igpu-passthrough-configuration) to setup the host, but slightly adapted the guest hardware settings.
 
-Regarding swap settings on the hypervisor: Recommendation is to [not use swap in Proxmox, but ensure that the VMs have enough swap space that they manage themselves](https://forum.proxmox.com/threads/what-is-the-better-solution-swapping-on-host-or-swapping-in-the-vm.34740/) and if so, only do this to cover potential over-provisioning of VM RAM.
+Regarding swap settings on the hypervisor: Recommendation is to [not use swap in Proxmox](https://forum.proxmox.com/threads/what-is-the-better-solution-swapping-on-host-or-swapping-in-the-vm.34740/), but ensure that the VMs have enough swap space that they manage themselves and if so, only do this to cover potential over-provisioning of VM RAM.
 
 **Compatibility list**
 
