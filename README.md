@@ -288,7 +288,7 @@ If Kodi is run as an unpriviledged user (recommended!) make sure to add the user
 
 **Note:** Running in parallel to UxPlay on a single VM seems to cause Kodi to overlay the UxPlay image (at least it was not visible but Kodi kept in the foreground independently of the sink used for UxPlay). Plan is to write a script watching for UxPlay's "-dacp" file. If the file appears (and thus a connection to UxPlay is established), the script shall pause the Kodi container or shut it down. Eventually both containers could be merged to run the script directly in the container.
 
-## Further References for troubleshooting
+## Further references for troubleshooting
 https://forum.proxmox.com/threads/igpu-passthrough-intel-j4105-gemini-lake-uhd-graphics-600.139505/
 https://forums.unraid.net/topic/124100-no-display-output-with-igpu-passthrough-windows-vm/
 https://forum.proxmox.com/threads/proxmox-5-2-gemini-lake-and-igd-graphics-passthrough-for-ubuntu-18.47129/page-2
