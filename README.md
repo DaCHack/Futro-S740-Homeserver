@@ -160,16 +160,21 @@ sudo service fail2ban restart
 su -
 apt install sudo
 usermod -a -G sudo administrator
-``` 
-6)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though! **I did not need this.**
-7) Install non-free firmware
+```
+6) Strip some unnecessary packages from the Debian installation:
+```
+sudo apt remove debian-faq doc-debian eject file iamerican ibritish ispell laptop-detect reportbug tasksel vim-common vim-tiny wamerican whois dictionaries-common emacsen-common fonts-droid-fallback ghostscript libcups2 libgs-common libgs10 libgs10-common libidn12 libijs-0.35 libjbig2dec0 libmagic-mgc libmagic1 libpaper-utils libpaper1 poppler-data python3-certifi python3-chardet python3-charset-normalizer python3-debian python3-debianbts python3-httplib2 python3-idna python3-pkg-resources python3-pycurl python3-pyparsing python3-pysimplesoap python3-requests python3-six python3-urllib3
+sudo apt autoremove
+```
+7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though! **I did not need this.**
+8) Install non-free firmware
 ```
 sudo apt install firmware-misc-nonfree
 ```
-8) Set up SSH
+9) Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
-9) Install and set up unattended-upgrades
+10) Install and set up unattended-upgrades
 ```
 sudo apt install unattended-upgrades
 ```
@@ -186,7 +191,7 @@ sudo systemctl enable unattended-upgrades
 sudo unattended-upgrades --dry-run --debug
 ```
 
-10) Install and set up fail2ban
+11) Install and set up fail2ban
 ```
 sudo apt install fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
