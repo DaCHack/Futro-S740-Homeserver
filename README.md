@@ -101,12 +101,12 @@ Edit `sudo nano /etc/fail2ban/jail.local` to secure the SSH server. Defaults can
 # normal (default), ddos, extra or aggressive (combines all).
 # See "tests/files/logs/sshd" or "filter.d/sshd.conf" for usage example and details.
 #mode   = normal
-**enabled = true
-filter  = sshd**
+enabled = true
+filter  = sshd
 port    = ssh
 logpath = %(sshd_log)s
-**#backend = %(sshd_backend)s
-backend = systemd**
+#backend = %(sshd_backend)s
+backend = systemd
 
 [proxmox]
 enabled = true
@@ -204,11 +204,11 @@ Edit `sudo nano /etc/fail2ban/jail.local` to secure the SSH server (ideally the 
 # normal (default), ddos, extra or aggressive (combines all).
 # See "tests/files/logs/sshd" or "filter.d/sshd.conf" for usage example and details.
 #mode   = normal
-**enabled = true
-filter  = sshd**
+enabled = true
+filter  = sshd
 port    = ssh
 logpath = %(sshd_log)s
-**#backend = %(sshd_backend)s
+#backend = %(sshd_backend)s
 backend = systemd**
 ```
 Restart the fail2ban daemon:
