@@ -233,6 +233,10 @@ Install Docker and deploy [Portainer](https://www.portainer.io/). If needed, mak
 sudo apt install docker.io
 sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /root/containers/portainer:/data portainer/portainer-ce:latest
 ```
+Install cifs-utils in case you want to make CIFS shares available to your containers as in my case:
+```
+sudo apt install cifs-utils
+```
 
 ### Local HTPC Outputs
 
