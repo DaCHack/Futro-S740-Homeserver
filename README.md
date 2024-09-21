@@ -231,7 +231,7 @@ sudo service fail2ban restart
 Install Docker and deploy [Portainer](https://www.portainer.io/). If needed, make sure to add the path to the SSL certificates as another volume:
 ```
 sudo apt install docker.io
-sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /root/containers/portainer:/data portainer/portainer-ce:latest
+sudo docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock -v /opt/appdata/portainer:/data portainer/portainer-ce:latest
 ```
 Install cifs-utils in case you want to make CIFS shares available to your containers as in my case:
 ```
