@@ -73,6 +73,12 @@ IONOS_SECRET = <XXXXXXX>
     - 30GB Root
     - 200GB local-lvm (30GB infra VM, min. 150GB media VM)
    
+I noticed that local-lvm was sized smaller than the available space after subtracting swap and root. So I extended the volume manually after installation based on this [documentation](https://pve.proxmox.com/wiki/Resize_disks#3._Enlarge_the_filesystem(s)_in_the_partitions_on_the_virtual_disk):
+```
+pvresize /dev/sda3
+lvresize --extents +100%FREE -resizefs /dev/pve/data
+```
+   
 15) Install and set up unattended-upgrades
 ```
 sudo apt install unattended-upgrades
