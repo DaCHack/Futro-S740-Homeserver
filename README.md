@@ -187,7 +187,13 @@ sudo apt autoremove
 ```
 sudo apt install firmware-misc-nonfree
 ```
-9) Set up SSH
+9) I usually create another non-root user separately from the main one to provide backup data to be pulled from external systems. This avoids having credentials for lateral movement on the source system. Setting a password is not needed as I only access the users home directory through key-based SSH login. Also install some tools I need for the bot scripts:
+```
+sudo useradd -m bot
+sudo apt install icu-devtools gpg
+```
+
+10) Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
    - Upload the `authorized_keys` file into the users' .ssh folder
@@ -208,7 +214,7 @@ Match User bot
         AuthenticationMethods "publickey"
 ```
 
-10) Install and set up unattended-upgrades
+11) Install and set up unattended-upgrades
 ```
 sudo apt install unattended-upgrades
 ```
@@ -225,7 +231,7 @@ sudo systemctl enable unattended-upgrades
 sudo unattended-upgrades --dry-run --debug
 ```
 
-11) Install and set up fail2ban
+12) Install and set up fail2ban
 ```
 sudo apt install fail2ban
 sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
@@ -248,11 +254,6 @@ backend = systemd**
 Restart the fail2ban daemon:
 ```
 sudo service fail2ban restart
-```
-
-12) I usually create another non-root user separately from the main one to provide backup data to be pulled from external systems. This avoids having credentials for lateral movement on the source system. Setting a password is not needed as I only access the users home directory through key-based SSH login:
-```
-sudo useradd -m bot
 ```
 
 
