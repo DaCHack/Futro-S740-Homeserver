@@ -163,6 +163,8 @@ net.ipv6.conf.default.disable_ipv6 = 1
 
 **Note:** Audio works fine with Proxmox 8.2.2 and Kernel 6.8.4-2-pve on a vanilla q35 machine with OVMF. Make sure both GPU and HDA are passed through with all functions on, while ROM-Bar and PCIe both deactivated! Audio Passthrough is [reported](https://www.mydealz.de/comments/permalink/38190848) to only function with OVMF BIOS but I got audio output on i440fx/SeaBIOS through the front audio jack with `sudo speaker-test -D plughw:1,0` (hostpci1 with All functions, ROM-Bar and PCIe checked on a q35 VM)
 
+**Note:** It seems that DisplayPort does not work when plugged in only after boot. I tested booting without the DP connected and did not receive any output until I first connected the monitor end and then plugged out and in again the PC end of the cable. Afterwards, the system detects the DP cable again even after the monitor end is completely cut off power. It needs about 10-20sec though for the connection to be established. Might be a special situation since I use a DP->HDMI cable and an HDMI-splitter between the PC and the monitor.
+
 3) Install e.g. Debian in the guest VM.
    - Ideally, unselect the desktop environment and only install SSH server and the standard system utilities.
    - In case of using a desktop environment, make sure to make the physical display your main display. Then you can basically use the connected USB mouse and keyboard as if your are working with a native system.
@@ -230,7 +232,11 @@ Restart the fail2ban daemon:
 sudo service fail2ban restart
 ```
 
-**Note:** It seems that DisplayPort does not work when plugged in only after boot. I tested booting without the DP connected and did not receive any output until I first connected the monitor end and then plugged out and in again the PC end of the cable. Afterwards, the system detects the DP cable again even after the monitor end is completely cut off power. It needs about 10-20sec though for the connection to be established. Might be a special situation since I use a DP->HDMI cable and an HDMI-splitter between the PC and the monitor.
+12) I usually create another non-root user separately from the main one to provide backup data to be pulled from external systems. This avoids having credentials for lateral movement on the source system:
+```
+sudo useradd -m bot
+```
+
 
 ### Docker setup
 
