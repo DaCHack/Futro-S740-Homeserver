@@ -190,6 +190,24 @@ sudo apt install firmware-misc-nonfree
 9) Set up SSH
    - After Debian installation is set up already and you are able to log in with the user created during installation
    - You may need to log into the guest system via SSH because the virtual console is not available due to PCI passthrough!
+   - Upload the `authorized_keys` file into the users' .ssh folder
+   - Edit the `sudo nano /etc/ssh/sshd_config` file:
+```
+KbdInteractiveAuthentication yes
+UsePAM yes
+PasswordAuthentication yes
+AuthenticationMethods "publickey,password"
+X11Forwarding no
+PrintMotd no  
+PrintLastLog no
+
+AllowUsers administrator bot
+
+Match User bot
+        PasswordAuthentication no
+        AuthenticationMethods "publickey"
+```
+
 10) Install and set up unattended-upgrades
 ```
 sudo apt install unattended-upgrades
