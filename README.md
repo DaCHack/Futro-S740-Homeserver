@@ -232,7 +232,7 @@ Restart the fail2ban daemon:
 sudo service fail2ban restart
 ```
 
-12) I usually create another non-root user separately from the main one to provide backup data to be pulled from external systems. This avoids having credentials for lateral movement on the source system:
+12) I usually create another non-root user separately from the main one to provide backup data to be pulled from external systems. This avoids having credentials for lateral movement on the source system. Setting a password is not needed as I only access the users home directory through key-based SSH login:
 ```
 sudo useradd -m bot
 ```
