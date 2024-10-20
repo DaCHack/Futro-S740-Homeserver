@@ -249,7 +249,7 @@ filter  = sshd
 port    = ssh
 logpath = %(sshd_log)s
 #backend = %(sshd_backend)s
-backend = systemd**
+backend = systemd
 ```
 Restart the fail2ban daemon:
 ```
