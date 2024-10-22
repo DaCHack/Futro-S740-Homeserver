@@ -179,7 +179,7 @@ usermod -a -G sudo administrator
 ```
 6) Strip some unnecessary packages from the Debian installation:
 ```
-sudo apt remove debian-faq doc-debian eject file iamerican ibritish ispell laptop-detect reportbug tasksel vim-common vim-tiny wamerican whois dictionaries-common emacsen-common fonts-droid-fallback ghostscript libcups2 libgs-common libgs10 libgs10-common libidn12 libijs-0.35 libjbig2dec0 libmagic-mgc libmagic1 libpaper-utils libpaper1 poppler-data python3-certifi python3-chardet python3-charset-normalizer python3-debian python3-debianbts python3-httplib2 python3-idna python3-pkg-resources python3-pycurl python3-pyparsing python3-pysimplesoap python3-requests python3-six python3-urllib3
+sudo apt remove debian-faq doc-debian eject file iamerican ibritish ispell laptop-detect reportbug tasksel vim-common vim-tiny wamerican whois dictionaries-common emacsen-common fonts-droid-fallback ghostscript libcups2 libgs-common libgs10 libgs10-common libidn12 libijs-0.35 libjbig2dec0 libmagic-mgc libmagic1 libpaper-utils libpaper1 poppler-data python3-certifi python3-chardet python3-charset-normalizer python3-debian python3-debianbts python3-httplib2 python3-idna python3-pkg-resources python3-pycurl python3-pyparsing python3-pysimplesoap python3-requests python3-six python3-urllib3 git git-man liberror-perl patch
 sudo apt autoremove
 ```
 7)  [For newer Kernels if speaker-test is unsuccessful](https://bugzilla.kernel.org/show_bug.cgi?id=208511), add `snd_hda_intel.probe_mask=1` or `snd_hda_intel.power_save_controller=0` to `sudo nano /etc/default/grub` cmdline and `sudo update-grub` to get sound from the audio jack. This might cause no output possible via DisplayPort though! **I did not need this.**
