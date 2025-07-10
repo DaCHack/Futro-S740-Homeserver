@@ -10,6 +10,7 @@ Reference: Raspberry Pi 4B 4GB Idle with Proxmox without VMs/CTs 2-3W, mostly 2.
 
 Futro: 
 
+| Consumption   | Configuration |
 | ------------- | ------------- |
 | 3.5-4.5W | Proxmox without VMs/CTs and without Mouse/Keyboard connected |
 | 3.5-4.5W | CPU governor "ondemand" |
