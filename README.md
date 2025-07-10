@@ -4,6 +4,16 @@ Notes on how to set up a fully virtualized homeserver incl. local HTPC on the Fu
 ## Basics and Hardware Information
 See https://github.com/R3NE07/Futro-S740
 
+### Energy Consumption
+
+Reference: Raspberry Pi 4B 4GB Idle with Proxmox without VMs/CTs 2-3W, mostly 2.5W,peaks at 3.2W with LAN cable connected
+
+Futro: 
+| Consumption | Configuration |
+| 3.5-4.5W | Proxmox without VMs/CTs and without Mouse/Keyboard connected |
+| 3.5-4.5W | CPU governor "ondemand" |
+| 3.5-4.1 | CPU governor "conservative" |
+
 ## Operating system (Proxmox) and iGPU passthrough
 I used [this guide](https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-passthrough-to-vm/#linux-virtual-machine-igpu-passthrough-configuration) to setup the host, but slightly adapted the guest hardware settings.
 
